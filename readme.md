@@ -66,7 +66,7 @@ g^3 = g\circ g\circ g = z\mapsto\frac 1z
 
 ### Représenter les fonctions sur le graphe
 #### Créer un graphe
-La classe graphe ne crée pas vraiment *un* graphe mais un ensemble de graphes; autant que vous en voulez. Renseignez en ```x```,``` y``` le nombre de lignes et de colonnes de graphes que vous souhaitez. Par défaut il n'y a qu'un seul graphe de créé.
+La classe graphe ne crée pas vraiment *un* graphe mais un ensemble de graphes; autant que vous en voulez. Renseignez en ```x```, ```y``` le nombre de lignes et de colonnes de graphes que vous souhaitez. Par défaut il n'y a qu'un seul graphe de créé.
 ```python
 graphe0 = gc.Graphe() #Crée 1 graphe
 graphe1 = gc.Graphe(3) #Crée 3 graphes sur une seule colonne
@@ -83,7 +83,7 @@ Voici, par exemple, le rendu de graphe4.
 ![Image de graphe4](readme_files/graphe4.png)
 
 #### Dessiner des fonctions
-Il est temps de dessiner ces fameuses fonctions complexes ! Il faut pour celà utiliser la méthode ```Graphe.tracer()``` qui prend en paramètre la fonction qu'on le veut tracer.
+Il est temps de dessiner ces fameuses fonctions complexes ! Il faut pour celà utiliser la méthode ```Graphe.trace()``` qui prend en paramètre la fonction qu'on le veut tracer.
 Traçons la fonction identité :
 ```python
 gph = gc.Graphe() # 1 seul graphe suffit ici
@@ -93,10 +93,12 @@ gph.trace(id)
 gph.affiche()
 ```
 Résultat :
+
 ![Graphe de la fonction identité](readme_files/graphe_id.png)
+
 On reviendra sur la construction et la lecture des images plus tard.
 
-Si vous avez plusieurs graphes, il faut renseigner sur quel graphe vous tracer dans le fonction ```Graphe.tracer``` :
+Si vous avez plusieurs graphes, il faut renseigner sur quel graphe vous tracer dans le fonction ```Graphe.trace``` :
 ```python
 gph = gc.Graphe(1, 2)
 id = gc.Fonction(lambda z:z)
@@ -106,7 +108,8 @@ gph.trace(id, 0, 0)
 gph.trace(aff, 1, 0)
 gph.affiche()
 ```
-![Graphe de la fonction identité a coté d'une fonction affine](image.png)
+![Graphe de la fonction identité a coté d'une fonction affine](readme_files/id&aff.png)
+
 Les deux paramètres suivant sont un facteur d'échelle et les bornes d'affichage du graphe :
 ```python
 gph = gc.Graphe(1, 2)
@@ -117,7 +120,7 @@ gph.trace(id, 0, 0, tailleMult=2)
 gph.trace(aff, 1, 0, taille=(-2, 1, -2, 0.5))
 gph.affiche()
 ```
-![Graphes redimensionnés](image-1.png)
+![Graphes redimensionnés](readme_files/tailleGraphe.png)
 Ici la fonction identité est affichée sur [-2, 2]² et la fonction affine sur [-2, 1]x[-2, 0.5].
 
 Le dernier paramètre est la résolution. En principe pas besoin de le changer sauf si vous voulez changer la qualité de l'image ou améliorer les performances de votre pc.
@@ -129,7 +132,8 @@ gph.trace(id, 0, 0)
 gph.trace(id, 1, 0, res=50)
 gph.affiche()
 ```
-![Graphe de l'identité avec deux résolutions différentes](image-2.png)
+
+![Graphe de l'identité avec deux résolutions différentes](readme_files/res.png)
 
 #### Fonctions fournies
 Des fonctions usuelles et certaines spéciales sont fournies avec la bibliothèque.
@@ -159,3 +163,37 @@ gph.trace(z_p) # Erreur !
 - ```serieDirichlet``` génère la série de Dirichlet associée à ```a(n)``` et ```l(n)``` jusqu'à ```N``` termes : $z\mapsto \sum a_ne^{z\lambda_n}$
 
 - ```serieDirichletn2``` génère la série de Dirichlet associée à ```a(n)=1``` et ```l(n)=n**2``` jusqu'à ```N``` termes avec un changement de variable logarithmique : $z\mapsto \sum z^{n^2}$
+
+#### Différents ajustements pour avoir des graphes utiles
+##### Homéomorphismes pour régler la luminosité
+Même si le graphe du l'identité est joli, on remarque que les variations de module masquent un peu les infomartions. Si c'est pas trop gênant pour l'instant regardons la fonction $z\mapsto i\frac{z+1}{z-1}$, appellée ici ```D2H``` :
+
+![D2H noir](image.png)
+
+On voit rien, si ce n'est ce point blanc, qui même zoomé n'apporte rien...
+
+![Point D2H](image-1.png)
+
+Pour celà on va utiliser des *homéomorphismes* de parties de $\mathbb R_+$ dans d'autres parties $\mathbb R_+$ pour ajuster la luminosité.
+Le *logarithme népérien* fonctionne à merveille ici. Pour l'utiliser dans le code, on le mettra à l'argument ```homeoR``` dans ```Graphe.trace()``` :
+```python
+gph.trace(gc.D2H, 0, 1, tailleMult=2, homeomR=gc.ln)
+```
+La différence est flagrande :
+![Comparaison D2H ln](image-2.png)
+
+De même l'identité est améliorée, mais maintenant elle est trop lumineuse. Cela vient du fait que, par défaut, Blanc = Module max **sur le graphe**. Mais ont peut régler celà via l'argument ```borneSupLum``` :
+```python
+gph.trace(gc.id, 1, 0, borneSupLum=4, homeomR=gc.ln)
+```
+
+Et voilà le résultat :
+![Comparaison id borneSupLum](image-3.png)
+
+On notera que utiliser cet argument fait que la représentation dépend aussi beaucoup plus de vos bornes du graphes :
+```python
+gph.trace(gc.id, 0, 0, tailleMult=10, homeomR=gc.ln)
+gph.trace(gc.id, 1, 0, tailleMult=10, borneSupLum=4, homeomR=gc.ln)
+```
+
+![Comparaison Bornes](image-4.png)

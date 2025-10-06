@@ -19,7 +19,7 @@ class Graphe:
         else:
             self.graphes = axs
 
-    def trace(self, f, grapheX=0, grapheY=0, tailleMult=1, taille=(-1, 1, -1, 1), res = 1000, lumZoom=1, homeomR=lambda x: x, marqueFonc=lambda z : False, marqueAlpha=0.5, marqueSurS=False, traceSurD=False):
+    def trace(self, f, grapheX=0, grapheY=0, tailleMult=1, taille=(-1, 1, -1, 1), res = 1000, borneSupLum=0, homeomR=lambda x: x, marqueFonc=lambda z : False, marqueAlpha=0.5, marqueSurS=False, traceSurD=False):
         taille = np.array(taille)*tailleMult
         x = np.linspace(taille[0], taille[1], res)
         y = np.linspace(taille[2], taille[3], res)
@@ -32,7 +32,8 @@ class Graphe:
 
         H = (θ+np.pi)/(2*np.pi)
         S = np.where(marqueFonc(fZ), np.ones(fZ.shape)*marqueAlpha, np.ones(fZ.shape)) if marqueSurS else np.ones(fZ.shape)
-        L = (R - R.min()) / (lumZoom*R.max() - R.min())
+        Rmax = R.max() if borneSupLum == 0 else borneSupLum
+        L = (R - R.min()) / (Rmax - R.min())
 
         L = np.where(marqueFonc(fZ), np.ones(fZ.shape)*0.5, L) if marqueSurS else np.where(marqueFonc(fZ), 1-L, L)
         L = np.where((np.abs(Z) <= 1), L*(1-L), 0)**0.5 if traceSurD else L
