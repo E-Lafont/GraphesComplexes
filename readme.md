@@ -50,20 +50,18 @@ g.composéePuissance(3)
 ```
 Ce qui correspond à :
 ```math
-\begin{center}
-\begin{aligned}
-f:z\mapsto z^2+iz-1 \\
-g:z\mapsto \frac 1z \\
-f(3)=8+3i \\
-f+g = z\mapsto z^2+iz-1+\frac 1z \\
-f-g = z\mapsto z^2+iz-1-\frac 1z \\
-fg = z\mapsto z+i-\frac 1z \\
-\frac fg = z\mapsto z^3+iz^2-z \\
-(f)^2 = ff = z\mapsto z^4+2iz^3-3z^2+2iz+1 \\
-f\circ g= z\mapsto \frac 1{z^2}+i\frac 1z-1 \\
-g^3 = g\circ g\circ g = z\mapsto\frac 1z
-\end{aligned}
-\end{center}
+\begin{align*}
+f&:&z\mapsto z^2+iz-1 \\
+g&:&z\mapsto \frac 1z \\
+f(3)&=&8+3i \\
+f+g &=& z\mapsto z^2+iz-1+\frac 1z \\
+f-g &=& z\mapsto z^2+iz-1-\frac 1z \\
+fg &=& z\mapsto z+i-\frac 1z \\
+\frac fg &=& z\mapsto z^3+iz^2-z \\
+(f)^2 = ff &=& z\mapsto z^4+2iz^3-3z^2+2iz+1 \\
+f\circ g&=& z\mapsto \frac 1{z^2}+i\frac 1z-1 \\
+g^3 = g\circ g\circ g &=& z\mapsto\frac 1z
+\end{align*}
 ```
 
 ### Représenter les fonctions sur le graphe
