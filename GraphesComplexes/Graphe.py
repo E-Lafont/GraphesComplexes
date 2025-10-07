@@ -32,7 +32,7 @@ class Graphe:
 
         H = (θ+np.pi)/(2*np.pi)
         S = np.where(marqueFonc(fZ), np.ones(fZ.shape)*(1-marqueAlpha), np.ones(fZ.shape)) if marqueSurS else np.ones(fZ.shape)
-        Rmax = R.max() if borneSupLum == 0 else borneSupLum
+        Rmax = R.max() if borneSupLum == 0 else homeomR(borneSupLum)
         L = (R - R.min()) / (Rmax - R.min())
 
         Lmarque = np.ones(fZ.shape)*0.5 if lumMarque else L
@@ -42,7 +42,8 @@ class Graphe:
 
         def format_coord(x, y):
             z = x + 1j*y
-            return f"x={x:.2f}, y={y:.2f}, |f(x,y)|={np.abs(f(z)):.3g}, θ={np.angle(f(z)):.3g}"
+            fz = f(z)
+            return f"x={x:.2f}, y={y:.2f}, f(z)={fz:.3g}, |f(x,y)|={np.abs(fz):.3g}, θ={np.angle(fz):.3g}={np.angle(fz)/np.pi:.3g}π"
         
         self.graphes[grapheY, grapheX].imshow(RGB, extent=taille, origin="lower")
         self.graphes[grapheY, grapheX].format_coord = format_coord

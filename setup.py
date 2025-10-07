@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="GraphesComplexes",
-    version="0.1",
+    version="0.1.2",
     packages=find_packages(),
     install_requires=["numpy", "matplotlib"],  # liste les dépendances si nécessaire
     author="Emmanuel Lafont",
