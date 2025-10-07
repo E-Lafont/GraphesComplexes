@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-from .outils import hsl2rgb, clip
+from .outils import hsl2rgb, clip, foncFinaleId
 
 class Graphe:
     def __init__(self, x=1, y=1):
@@ -19,7 +19,7 @@ class Graphe:
         else:
             self.graphes = axs
 
-    def trace(self, f, grapheX=0, grapheY=0, tailleMult=1, taille=(-1, 1, -1, 1), res = 1000, borneSupLum=0, homeomR=lambda x: x, marqueFonc=lambda z : False, marqueAlpha=0.5, marqueSurS=False, traceSurD=False):
+    def trace(self, f, grapheX=0, grapheY=0, tailleMult=1, taille=(-1, 1, -1, 1), res = 1000, borneSupLum=0, homeomR=lambda x: x, marqueFonc=lambda z : False, marqueAlpha=0.5, marqueSurS=True, lumMarque=False, traceSurD=False, foncFinale=foncFinaleId):
         taille = np.array(taille)*tailleMult
         x = np.linspace(taille[0], taille[1], res)
         y = np.linspace(taille[2], taille[3], res)
@@ -31,14 +31,14 @@ class Graphe:
         θ = np.angle(fZ)
 
         H = (θ+np.pi)/(2*np.pi)
-        S = np.where(marqueFonc(fZ), np.ones(fZ.shape)*marqueAlpha, np.ones(fZ.shape)) if marqueSurS else np.ones(fZ.shape)
+        S = np.where(marqueFonc(fZ), np.ones(fZ.shape)*(1-marqueAlpha), np.ones(fZ.shape)) if marqueSurS else np.ones(fZ.shape)
         Rmax = R.max() if borneSupLum == 0 else borneSupLum
         L = (R - R.min()) / (Rmax - R.min())
 
-        L = np.where(marqueFonc(fZ), np.ones(fZ.shape)*0.5, L) if marqueSurS else np.where(marqueFonc(fZ), 1-L, L)
-        L = np.where((np.abs(Z) <= 1), L*(1-L), 0)**0.5 if traceSurD else L
+        Lmarque = np.ones(fZ.shape)*0.5 if lumMarque else L
+        L = np.where(marqueFonc(fZ), Lmarque, L) if marqueSurS else np.where(marqueFonc(fZ), 1-L, L)
 
-        RGB = hsl2rgb(H, S, L)
+        RGB = hsl2rgb(foncFinale(H, S, L, Z, f))
 
         def format_coord(x, y):
             z = x + 1j*y

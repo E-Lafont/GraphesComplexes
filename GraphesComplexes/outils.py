@@ -95,12 +95,13 @@ fonctions_marques = [
 # =========================================================
 # 🎨 Conversion HSL → RGB
 # =========================================================
-def hsl2rgb(H, S, L):
+def hsl2rgb(HSL):
     """
     Conversion HSL → RGB
-    H, S, L ∈ [0,1] (arrays ou scalaires)
+    (H, S, L) ∈ [0,1]^3 (arrays ou scalaires)
     Retourne RGB ∈ [0,1] (même shape + dernière dimension=3)
     """
+    H, S, L = HSL
     V = L + S * np.minimum(L, 1 - L)
     Sv = np.zeros_like(S)
     mask = V > 0
@@ -108,3 +109,16 @@ def hsl2rgb(H, S, L):
     
     HSV = np.stack([H, Sv, V], axis=-1)
     return hsv_to_rgb(HSV)
+
+# =========================================================
+# Fonction finale identité
+# =========================================================
+def foncFinaleId(H, S, L, Z, f):
+    return H, S, L
+
+def permuteHL(H, S, L, Z, f):
+    return L, S, H
+
+def traceSurD(H, S, L, Z, f):
+    L = np.where((np.abs(Z) <= 1), L*(1-L), 0)**0.5
+    return H, S, L

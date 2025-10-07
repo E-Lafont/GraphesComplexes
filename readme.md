@@ -168,11 +168,11 @@ gph.trace(z_p) # Erreur !
 ##### Homéomorphismes pour régler la luminosité
 Même si le graphe du l'identité est joli, on remarque que les variations de module masquent un peu les infomartions. Si c'est pas trop gênant pour l'instant regardons la fonction $z\mapsto i\frac{z+1}{z-1}$, appellée ici ```D2H``` :
 
-![D2H noir](image.png)
+![D2H noir](readme_files/D2H_noir.png)
 
 On voit rien, si ce n'est ce point blanc, qui même zoomé n'apporte rien...
 
-![Point D2H](image-1.png)
+![Point D2H](readme_files/point_D2H.png)
 
 Pour celà on va utiliser des *homéomorphismes* de parties de $\mathbb R_+$ dans d'autres parties $\mathbb R_+$ pour ajuster la luminosité.
 Le *logarithme népérien* fonctionne à merveille ici. Pour l'utiliser dans le code, on le mettra à l'argument ```homeoR``` dans ```Graphe.trace()``` :
@@ -180,7 +180,7 @@ Le *logarithme népérien* fonctionne à merveille ici. Pour l'utiliser dans le 
 gph.trace(gc.D2H, 0, 1, tailleMult=2, homeomR=gc.ln)
 ```
 La différence est flagrande :
-![Comparaison D2H ln](image-2.png)
+![Comparaison D2H ln](readme_files/D2H_ln.png)
 
 De même l'identité est améliorée, mais maintenant elle est trop lumineuse. Cela vient du fait que, par défaut, Blanc = Module max **sur le graphe**. Mais ont peut régler celà via l'argument ```borneSupLum``` :
 ```python
@@ -188,7 +188,7 @@ gph.trace(gc.id, 1, 0, borneSupLum=4, homeomR=gc.ln)
 ```
 
 Et voilà le résultat :
-![Comparaison id borneSupLum](image-3.png)
+![Comparaison id borneSupLum](readme_files/comparaison_borneSupLum.png)
 
 On notera que utiliser cet argument fait que la représentation dépend aussi beaucoup plus de vos bornes du graphes :
 ```python
@@ -196,4 +196,50 @@ gph.trace(gc.id, 0, 0, tailleMult=10, homeomR=gc.ln)
 gph.trace(gc.id, 1, 0, tailleMult=10, borneSupLum=4, homeomR=gc.ln)
 ```
 
-![Comparaison Bornes](image-4.png)
+![Comparaison Bornes](readme_files/comparaison_borne.png)
+
+Il y a d'autre fonctions (présentes dans ```homeomorphisme_R```) qui permettent de jouer avec la représentation modulaire. Ici un exemple sur la fonction $z\mapsto\exp(\frac1z)$ :
+```python
+f = gc.exp @ gc.inv
+gph.trace(f, 0, 0, tailleMult=0.5, homeomR=gc.ln)
+gph.trace(f, 1, 0, tailleMult=0.5, homeomR=gc.hm_ln)
+```
+![Comparaison ln - hm_ln](readme_files/ln_vs_hm_ln.png)
+
+On remarque que le logarithme seul permet de bien identifier les pôles et racines, mais on a l'impression que le module varie peu en dehors. En utilisant l'homeomorphisme $x\mapsto \frac{x}{1+|x|}$ combiné à $\ln$, on observe que pour les nombres à partie réelle négative, le module est $<1$ et de l'autre coté $>1$.
+
+##### Marquer des parties du graphes
+Il peut être interessant d'observer qu'elle partie du graphe est envoyé ou sur telle ou telle fonction, ou encore de tracer des courbes d'isomodule. Pour cela il y a l'argument ```marqueFonc```. Par exemple pour observer ou est envoyé le plan de Poincarré $\mathbb H$, on utilise la fonction ```marqueH``` :
+
+```python
+gph.trace(gc.id, 0, 0, tailleMult=2, homeomR=gc.ln, borneSupLum=4, marqueFonc=gc.marqueH)
+gph.trace(gc.D2H, 1, 0, tailleMult=2, homeomR=gc.ln, marqueFonc=gc.marqueH)
+```
+
+![marqueH](readme_files/marqueH.png)
+On voit que l'identité envoie bien $\mathbb H$ sur lui même, et ```D2H``` envoie le disque unité $\mathbb D$ sur $\mathbb H$, la partie grisée étant $\{z\mid f(z)\in\mathbb H \}$ i.e. $ f^{-1}(\mathbb H) $.
+
+La marque se fait par une légère désaturation des couleurs, mais cela peut être changé :
+- ```marqueAlpha``` permet de faire varier cette désaturation ;
+- ```marqueSurS```permet, en étant réglé à ```False```, que la marque joue sur les couleurs et non la saturation ;
+- ```lumMarque``` permet de définir la luminosité de la marque à 0.5 hisoitre de bien voir les marques.
+
+```python
+gph.trace(gc.id, 0, 0, tailleMult=2, homeomR=gc.ln, borneSupLum=4, marqueFonc=gc.marqueH)
+gph.trace(gc.D2H, 1, 0, tailleMult=2, homeomR=gc.ln, marqueFonc=gc.marqueH)
+gph.trace(gc.exp@gc.inv, 2, 0, tailleMult=0.5, homeomR=gc.hm_ln, marqueFonc=gc.marqueH, marqueAlpha=0.75)
+
+gph.trace(gc.id, 0, 1, tailleMult=2, homeomR=gc.ln, borneSupLum=4, marqueFonc=gc.marqueH, marqueAlpha=1)
+gph.trace(gc.D2H, 1, 1, tailleMult=2, homeomR=gc.ln, marqueFonc=gc.marqueH, marqueSurS=False)
+gph.trace(gc.exp@gc.inv, 2, 1, tailleMult=0.5, homeomR=gc.hm_ln, marqueFonc=gc.marqueH, marqueAlpha=0.75, lumMarque=True)
+```
+
+![Diffences avec les paramètres de marquage](readme_files/diff_mark.png)
+
+##### Manipulation post-traitement des couleurs
+Le paramètre ```foncFinale``` vous permet de faire vos propres modifications sur H, S et L. Faites attention à les garder entre 0 et 1 !
+```python
+gph.trace(gc.id, 0, 0, tailleMult=1.2, homeomR=gc.ln, borneSupLum=4)
+gph.trace(gc.id, 1, 0, tailleMult=1.2, homeomR=gc.ln, borneSupLum=4, foncFinale=gc.permuteHL)
+```
+![foncFinale](readme_files/foncFinale.png)
